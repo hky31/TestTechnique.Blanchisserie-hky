@@ -1,0 +1,97 @@
+@use '../../../styles.scss' as global;
+
+.common-header {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: var(--spacing-md) 0;
+  box-shadow: var(--shadow-elevation-2);
+
+  .header-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      
+      i {
+        font-size: 1.75rem;
+        background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .admin-badge {
+        background: linear-gradient(135deg, var(--accent-color), var(--accent-dark));
+        color: white;
+        padding: var(--spacing-xs) var(--spacing-sm);
+        border-radius: var(--border-radius-lg);
+        font-weight: 600;
+        font-size: 0.875rem;
+        display: flex;
+        align-items: center;
+        gap: var(--spacing-xs);
+        box-shadow: var(--shadow-elevation-2);
+
+        i {
+          font-size: 1rem;
+          background: none;
+          -webkit-background-clip: unset;
+          -webkit-text-fill-color: unset;
+          background-clip: unset;
+          color: white;
+        }
+      }
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+
+      .user-name {
+        font-weight: 600;
+        color: var(--text-color);
+        font-size: 1rem;
+      }
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 768px) {
+  .common-header {
+    .header-content {
+      padding: 0 var(--spacing-md);
+      flex-direction: column;
+      gap: var(--spacing-md);
+      
+      .brand {
+        font-size: 1.25rem;
+        
+        .brand-text {
+          display: none;
+        }
+
+        .admin-badge {
+          font-size: 0.75rem;
+        }
+      }
+
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}

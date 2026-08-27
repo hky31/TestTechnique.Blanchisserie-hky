@@ -1,0 +1,294 @@
+/* Styles modernes pour le composant Login */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  padding: var(--spacing-lg);
+  box-sizing: border-box;
+}
+
+.login-background {
+  position: relative;
+  z-index: 1;
+}
+
+.login-background::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    var(--primary-500) 0%, 
+    var(--primary-600) 25%, 
+    var(--secondary-600) 75%, 
+    var(--secondary-700) 100%);
+  z-index: -1;
+}
+
+.login-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  width: 420px;
+  max-width: 90vw;
+  min-height: 500px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+}
+
+.logo-container i {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.form-group {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.form-group .p-error {
+  position: absolute;
+  bottom: -1.25rem;
+  left: 0;
+  right: 0;
+  height: 1rem;
+  line-height: 1rem;
+  font-size: 0.75rem;
+  color: var(--error-500);
+  margin: 0;
+  transition: opacity 0.2s ease;
+  white-space: nowrap;
+}
+
+.form-group .p-error:empty {
+  opacity: 0;
+}
+
+.login-form {
+  padding-bottom: 1rem;
+}
+
+.form-label {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+  color: var(--secondary-700);
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.form-label i {
+  color: var(--primary-500);
+}
+
+.p-input-icon-left {
+  position: relative;
+}
+
+.p-input-icon-left > i {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--secondary-400);
+  z-index: 2;
+}
+
+.p-input-icon-left .p-inputtext,
+.p-input-icon-left .p-password input,
+.p-input-icon-left .p-password .p-password-input {
+  padding-left: 2.5rem!important;
+}
+
+.login-button {
+  height: 3rem;
+  font-weight: 600;
+  border-radius: var(--border-radius-md);
+  background: linear-gradient(135deg, var(--primary-500), var(--primary-600)) !important;
+  border: none !important;
+  transition: all 0.3s ease !important;
+}
+
+.login-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  background: linear-gradient(135deg, var(--primary-600), var(--primary-700)) !important;
+}
+
+.test-info {
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+}
+
+.divider {
+  position: relative;
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.divider::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--secondary-300);
+  z-index: 1;
+}
+
+.divider span {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0 var(--spacing-md);
+  color: var(--secondary-600);
+  font-size: 0.875rem;
+  font-weight: 500;
+  position: relative;
+  z-index: 2;
+}
+
+.test-accounts {
+  gap: var(--spacing-sm);
+}
+
+.test-account-card {
+  background: var(--secondary-50);
+  border: 2px solid var(--secondary-200);
+  border-radius: var(--border-radius-md);
+  padding: var(--spacing-md);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.test-account-card:hover {
+  background: var(--primary-50);
+  border-color: var(--primary-300);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.account-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  margin-bottom: var(--spacing-xs);
+  font-size: 0.875rem;
+}
+
+.account-header i {
+  font-size: 1.125rem;
+}
+
+.account-details small {
+  color: var(--secondary-600);
+  font-size: 0.75rem;
+}
+
+/* Animations améliorées */
+.fade-in {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+.slide-in {
+  animation: slideInLeft 0.5s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive amélioré */
+@media (max-width: 480px) {
+  .login-card {
+    margin: var(--spacing-md);
+    padding: var(--spacing-xl);
+  }
+  
+  .logo-container h1 {
+    font-size: 1.75rem;
+  }
+  
+  .test-accounts {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* États d'erreur personnalisés */
+.ng-invalid.ng-touched:not(.p-password) {
+
+}
+
+.p-error {
+  color: var(--error-500);
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+:host ::ng-deep {
+  .p-password {
+    width: 100%;
+    
+    .p-password-input {
+      width: 100%;
+    }
+  }
+
+  .p-inputtext {
+    width: 100%;
+  }
+
+  .p-button {
+    width: 100%;
+  }
+
+  // Fix spécifique pour l'icône dans p-password
+  .p-input-icon-left {
+    .p-password {
+      .p-password-input {
+        padding-left: 2.5rem !important;
+      }
+      
+      input {
+        padding-left: 2.5rem !important;
+      }
+    }
+    
+    .p-inputtext {
+      padding-left: 2.5rem !important;
+    }
+  }
+}

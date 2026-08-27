@@ -1,0 +1,6 @@
+@BlanchisserieAPI_HostAddress = http://localhost:5172
+
+GET {{BlanchisserieAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

@@ -1,0 +1,119 @@
+<div class="login-container">
+  <div class="login-background">
+    <div class="login-card fade-in">
+      <!-- Header avec logo -->
+      <div class="login-header">
+        <div class="logo-container">
+          <i class="pi pi-home text-4xl mb-3" style="color: var(--primary-500);"></i>
+          <h1 class="text-3xl font-bold text-center mb-2" style="color: var(--secondary-800);">
+            Blanchisserie
+          </h1>
+        </div>
+      </div>
+
+      <!-- Formulaire de connexion -->
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        
+        <!-- Message d'erreur -->
+        <div *ngIf="errorMessage" class="p-message p-message-error mb-4 slide-in">
+          <div class="p-message-wrapper">
+            <span class="p-message-icon pi pi-exclamation-triangle"></span>
+            <div class="p-message-text">{{ errorMessage }}</div>
+          </div>
+        </div>
+
+        <!-- Champ nom d'utilisateur -->
+        <div class="form-group">
+          <label for="username" class="form-label">
+            <i class="pi pi-user mr-2">&nbsp;</i>
+            Nom d'utilisateur
+          </label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-user">&nbsp;</i>
+            <input 
+              pInputText 
+              id="username"
+              formControlName="username"
+              placeholder="Entrez votre nom d'utilisateur"
+              class="w-full"
+              [class.ng-invalid]="loginForm.get('username')?.invalid && loginForm.get('username')?.touched"
+            />
+          </span>
+          <small 
+            *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched; else placeholderUsername" 
+            class="p-error">
+            Le nom d'utilisateur est requis
+          </small>
+          <ng-template #placeholderUsername>
+            <small class="p-error">&nbsp;</small>
+          </ng-template>
+        </div>
+
+        <!-- Champ mot de passe -->
+        <div class="form-group">
+          <label for="password" class="form-label">
+            <i class="pi pi-lock mr-2">&nbsp;</i>
+            Mot de passe
+          </label>
+          <span class="p-input-icon-left w-full">
+            <i class="pi pi-lock">&nbsp;</i>
+            <p-password 
+              formControlName="password"
+              placeholder="Entrez votre mot de passe"
+              [toggleMask]="true"
+              [feedback]="false"
+              [class.ng-invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+            </p-password>
+          </span>
+          <small 
+            *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched; else placeholderPassword" 
+            class="p-error">
+            Le mot de passe est requis
+          </small>
+          <ng-template #placeholderPassword>
+            <small class="p-error">&nbsp;</small>
+          </ng-template>
+        </div>
+
+        <!-- Bouton de connexion -->
+        <p-button 
+          type="submit"
+          label="Se connecter"
+          icon="pi pi-sign-in"
+          [loading]="loading"
+          [disabled]="loginForm.invalid || loading"
+          styleClass="w-full p-button-primary login-button">
+        </p-button>
+
+        <!-- Informations de test -->
+        <div class="test-info mt-6">
+          <div class="divider">
+            <span>Comptes de test</span>
+          </div>
+          
+          <div class="test-accounts grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
+            <div class="test-account-card" (click)="useTestAccount('admin')">
+              <div class="account-header">
+                <i class="pi pi-shield text-error-500"></i>
+                <span class="font-semibold">Administrateur</span>
+              </div>
+              <div class="account-details">
+                <small>admin / admin123</small>
+              </div>
+            </div>
+            
+            <div class="test-account-card" (click)="useTestAccount('user')">
+              <div class="account-header">
+                <i class="pi pi-user text-primary-500"></i>
+                <span class="font-semibold">Utilisateur</span>
+              </div>
+              <div class="account-details">
+                <small>user / user123</small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
