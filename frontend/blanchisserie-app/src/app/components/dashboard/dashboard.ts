@@ -8,16 +8,13 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/auth.models';
 import { CommonHeaderComponent } from '../common-header/common-header';
+import { OrderComponent } from '../order/order';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [
-    CommonModule,
-    ButtonModule,
-    CommonHeaderComponent
-  ],
+  imports: [CommonModule, ButtonModule, CommonHeaderComponent, OrderComponent],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.scss'
+  styleUrl: './dashboard.scss',
 })
 export class Dashboard implements OnInit {
   readonly authService = inject(AuthService);

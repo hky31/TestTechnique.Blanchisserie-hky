@@ -47,14 +47,14 @@ namespace BlanchisserieAPI.Controllers
 
         [HttpPost("create")]
         [Authorize]
-        public async Task<ActionResult<OrderResponseDto?>> CreateOrder([FromBody] OrderRequestDto orderRequest)
+        public async Task<ActionResult<OrderResponseDto?>> CreateOrder([FromRoute] int userId, [FromBody] OrderRequestDto orderRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var order = await _orderService.CreateOrderAsync(orderRequest);
+            var order = await _orderService.CreateOrderAsync(orderRequest, userId);
 
             if (order == null)
             {

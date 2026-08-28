@@ -9,7 +9,7 @@ namespace BlanchisserieAPI.Services
     {
         Task<OrderResponseDto?> GetOrderByIdAsync(int orderid);
         Task<List<OrderResponseDto>?> GetAllOrdersAsync();
-        Task<OrderResponseDto?> CreateOrderAsync(OrderRequestDto orderRequest);
+        Task<OrderResponseDto?> CreateOrderAsync(OrderRequestDto orderRequest, int userId);
         Task<OrderResponseDto?> UpdateOrderAsync(int orderId, OrderRequestDto orderRequest);
         Task<List<OrderResponseDto>?> GetOrdersByUserIdAsync(int userId);
     }
@@ -27,9 +27,14 @@ namespace BlanchisserieAPI.Services
         {
             var allOrders = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Include(o => o.User)
                 .Select(order => new OrderResponseDto
                 {
                     Id = order.Id,
+                    UserId = order.UserId,
+                    CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
+                    CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
+                    CustomerEmail = order.User != null ? order.User.Email : string.Empty,
                     OrderItems = order.OrderItems.ToList(),
                     CreatedAt = order.CreatedAt,
                     Status = order.Status,
@@ -48,6 +53,7 @@ namespace BlanchisserieAPI.Services
         {
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == orderid);
 
             if (order == null)
@@ -56,6 +62,10 @@ namespace BlanchisserieAPI.Services
             return new OrderResponseDto
             {
                 Id = order.Id,
+                UserId = order.UserId,
+                CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
+                CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
+                CustomerEmail = order.User != null ? order.User.Email : string.Empty,
                 OrderItems = order.OrderItems.ToList(),
                 CreatedAt = order.CreatedAt,
                 Status = order.Status,
@@ -63,12 +73,17 @@ namespace BlanchisserieAPI.Services
             };
         }
 
-        public async Task<OrderResponseDto?> CreateOrderAsync(OrderRequestDto orderRequest)
+        public async Task<OrderResponseDto?> CreateOrderAsync(OrderRequestDto orderRequest, int userId)
         {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                return null;
+
             // create new order
             var newOrder = new Order
             {
                 CreatedAt = DateTime.UtcNow,
+                UserId = userId,
                 Status = orderRequest.Status,
                 Commentaire = orderRequest.Commentaire
             };
@@ -106,6 +121,7 @@ namespace BlanchisserieAPI.Services
         {
             var order = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
@@ -121,6 +137,10 @@ namespace BlanchisserieAPI.Services
             return new OrderResponseDto
             {
                 Id = order.Id,
+                UserId = order.UserId,
+                CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
+                CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
+                CustomerEmail = order.User != null ? order.User.Email : string.Empty,
                 OrderItems = order.OrderItems.ToList(),
                 CreatedAt = order.CreatedAt,
                 Status = order.Status,
@@ -132,10 +152,15 @@ namespace BlanchisserieAPI.Services
         {
             var userOrderList = await _context.Orders
                 .Include(o => o.OrderItems)
+                .Include(o => o.User)
                 .Where(o => o.UserId == userId)
                 .Select(order => new OrderResponseDto
                 {
                     Id = order.Id,
+                    UserId = order.UserId,
+                    CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
+                    CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
+                    CustomerEmail = order.User != null ? order.User.Email : string.Empty,
                     OrderItems = order.OrderItems.ToList(),
                     CreatedAt = order.CreatedAt,
                     Status = order.Status,

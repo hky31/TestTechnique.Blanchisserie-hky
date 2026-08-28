@@ -22,7 +22,6 @@ namespace BlanchisserieAPI.Models
 
         public string Commentaire { get; set; } = string.Empty;
         
-        [ForeignKey("User")]
         public int UserId { get; set; }
         public User? User { get; set; }
     }
