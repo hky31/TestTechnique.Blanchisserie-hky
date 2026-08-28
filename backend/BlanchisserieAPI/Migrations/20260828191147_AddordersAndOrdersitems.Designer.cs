@@ -3,6 +3,7 @@ using System;
 using BlanchisserieAPI.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlanchisserieAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260828191147_AddordersAndOrdersitems")]
+    partial class AddordersAndOrdersitems
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "9.0.9");
@@ -47,7 +50,7 @@ namespace BlanchisserieAPI.Migrations
                         {
                             Id = 1,
                             Commentaire = "Please handle with care.",
-                            CreatedAt = new DateTime(2026, 8, 28, 19, 38, 57, 209, DateTimeKind.Utc).AddTicks(5710),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Status = 0,
                             UserId = 1
                         },
@@ -55,7 +58,7 @@ namespace BlanchisserieAPI.Migrations
                         {
                             Id = 2,
                             Commentaire = "Urgent delivery required.",
-                            CreatedAt = new DateTime(2026, 8, 28, 19, 38, 57, 209, DateTimeKind.Utc).AddTicks(6160),
+                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Status = 0,
                             UserId = 2
                         });

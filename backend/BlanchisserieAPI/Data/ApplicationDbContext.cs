@@ -13,6 +13,8 @@ namespace BlanchisserieAPI.Data
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<OrderItem> OrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -51,6 +53,28 @@ namespace BlanchisserieAPI.Data
             modelBuilder.Entity<Role>()
                 .HasIndex(r => r.Name)
                 .IsUnique();
+
+            modelBuilder.Entity<UserRole>()
+                .HasKey(ur => ur.Id);
+
+            modelBuilder.Entity<UserRole>()
+                .HasOne(ur => ur.User)
+                .WithMany(u => u.UserRoles)
+                .HasForeignKey(ur => ur.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // configuration des Order et OrderItem
+            modelBuilder.Entity<OrderItem>()
+                .HasOne(oi => oi.Order)
+                .WithMany(o => o.OrderItems)
+                .HasForeignKey(oi => oi.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+            
+            modelBuilder.Entity<Order>()
+                .HasOne(o => o.User)
+                .WithMany()
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Données de démarrage
             SeedData(modelBuilder);
@@ -98,6 +122,49 @@ namespace BlanchisserieAPI.Data
             modelBuilder.Entity<UserRole>().HasData(
                 new UserRole { Id = 1, UserId = 1, RoleId = 1, AssignedAt = seedDate }, // admin -> Admin
                 new UserRole { Id = 2, UserId = 2, RoleId = 2, AssignedAt = seedDate }  // user -> Utilisateur
+            );
+
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    Id = 1,
+                    CreatedAt = DateTime.UtcNow,
+                    Status = OrderStatus.Waiting,
+                    Commentaire = "Please handle with care.",
+                    UserId = 1
+                },
+
+                new Order
+                {
+                    Id = 2,
+                    CreatedAt = DateTime.UtcNow,
+                    Status = OrderStatus.Waiting,
+                    Commentaire = "Urgent delivery required.",
+                    UserId = 2
+                }
+            );
+            modelBuilder.Entity<OrderItem>().HasData(
+                new OrderItem
+                {
+                    Id = 1,
+                    ArticleName = "Shirt",
+                    Price = 5.99,
+                    OrderId = 1
+                },
+                new OrderItem
+                {
+                    Id = 2,
+                    ArticleName = "Pants",
+                    Price = 9.99,
+                    OrderId = 1
+                },
+                new OrderItem
+                {
+                    Id = 3,
+                    ArticleName = "Dress",
+                    Price = 12.99,
+                    OrderId = 2
+                }
             );
         }
     }
