@@ -26,7 +26,7 @@ namespace BlanchisserieAPI.Services
         public async Task<List<OrderResponseDto>?> GetAllOrdersAsync()
         {
             var allOrders = await _context.Orders
-                .Include(o => o.OrderItems)
+                .Include(o => o.OrderList)
                 .Include(o => o.User)
                 .Select(order => new OrderResponseDto
                 {
@@ -35,7 +35,7 @@ namespace BlanchisserieAPI.Services
                     CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
                     CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
                     CustomerEmail = order.User != null ? order.User.Email : string.Empty,
-                    OrderItems = order.OrderItems.ToList(),
+                    OrderItems = order.OrderList.Select(oo => oo.OrderItem).ToList(),
                     CreatedAt = order.CreatedAt,
                     Status = order.Status,
                     Commentaire = order.Commentaire
@@ -52,7 +52,8 @@ namespace BlanchisserieAPI.Services
         public async Task<OrderResponseDto?> GetOrderByIdAsync(int orderid)
         {
             var order = await _context.Orders
-                .Include(o => o.OrderItems)
+                .Include(o => o.OrderList)
+                .ThenInclude(oo => oo.OrderItem)
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == orderid);
 
@@ -66,7 +67,7 @@ namespace BlanchisserieAPI.Services
                 CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
                 CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
                 CustomerEmail = order.User != null ? order.User.Email : string.Empty,
-                OrderItems = order.OrderItems.ToList(),
+                OrderItems = order.OrderList.Select(oo => oo.OrderItem).ToList(),
                 CreatedAt = order.CreatedAt,
                 Status = order.Status,
                 Commentaire = order.Commentaire
@@ -97,9 +98,8 @@ namespace BlanchisserieAPI.Services
             {
                 var newItem = new OrderItem
                 {
-                    ArticleName = item.ArticleName,
-                    Price = item.Price,
-                    OrderId = newOrder.Id
+                    ItemName = item.ItemName,
+                    Price = item.Price
                 };
                 _context.OrderItems.Add(newItem);
             }
@@ -110,7 +110,7 @@ namespace BlanchisserieAPI.Services
             return new OrderResponseDto
             {
                 Id = newOrder.Id,
-                OrderItems = newOrder.OrderItems.ToList(),
+                OrderItems = newOrder.OrderList.Select(oo => oo.OrderItem).ToList(),
                 CreatedAt = newOrder.CreatedAt,
                 Status = newOrder.Status,
                 Commentaire = newOrder.Commentaire
@@ -120,7 +120,8 @@ namespace BlanchisserieAPI.Services
         public async Task<OrderResponseDto?> UpdateOrderAsync(int orderId, OrderRequestDto orderRequest)
         {
             var order = await _context.Orders
-                .Include(o => o.OrderItems)
+                .Include(o => o.OrderList)
+                .ThenInclude(oo => oo.OrderItem)
                 .Include(o => o.User)
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
@@ -141,7 +142,7 @@ namespace BlanchisserieAPI.Services
                 CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
                 CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
                 CustomerEmail = order.User != null ? order.User.Email : string.Empty,
-                OrderItems = order.OrderItems.ToList(),
+                OrderItems = order.OrderList.Select(oo => oo.OrderItem).ToList(),
                 CreatedAt = order.CreatedAt,
                 Status = order.Status,
                 Commentaire = order.Commentaire
@@ -151,7 +152,8 @@ namespace BlanchisserieAPI.Services
         public async Task<List<OrderResponseDto>?> GetOrdersByUserIdAsync(int userId)
         {
             var userOrderList = await _context.Orders
-                .Include(o => o.OrderItems)
+                .Include(o => o.OrderList)
+                .ThenInclude(oo => oo.OrderItem)
                 .Include(o => o.User)
                 .Where(o => o.UserId == userId)
                 .Select(order => new OrderResponseDto
@@ -161,7 +163,7 @@ namespace BlanchisserieAPI.Services
                     CustomerFirstName = order.User != null ? order.User.FirstName : string.Empty,
                     CustomerLastName = order.User != null ? order.User.LastName : string.Empty,
                     CustomerEmail = order.User != null ? order.User.Email : string.Empty,
-                    OrderItems = order.OrderItems.ToList(),
+                    OrderItems = order.OrderList.Select(oo => oo.OrderItem).ToList(),
                     CreatedAt = order.CreatedAt,
                     Status = order.Status,
                     Commentaire = order.Commentaire

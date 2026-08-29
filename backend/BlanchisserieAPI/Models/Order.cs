@@ -14,7 +14,7 @@ namespace BlanchisserieAPI.Models
         [Key]
         public int Id { get; set; }
         
-        public ICollection<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+        public ICollection<OrderOrderItem> OrderList { get; set; } = new List<OrderOrderItem>();
         
         public DateTime CreatedAt { get; set; }
 

@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlanchisserieAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260828191147_AddordersAndOrdersitems")]
-    partial class AddordersAndOrdersitems
+    [Migration("20260829163532_InitialCreateSqlite")]
+    partial class InitialCreateSqlite
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -50,7 +50,7 @@ namespace BlanchisserieAPI.Migrations
                         {
                             Id = 1,
                             Commentaire = "Please handle with care.",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Status = 0,
                             UserId = 1
                         },
@@ -58,7 +58,7 @@ namespace BlanchisserieAPI.Migrations
                         {
                             Id = 2,
                             Commentaire = "Urgent delivery required.",
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Status = 0,
                             UserId = 2
                         });
@@ -70,20 +70,15 @@ namespace BlanchisserieAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("ArticleName")
+                    b.Property<string>("ItemName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
-
-                    b.Property<int>("OrderId")
-                        .HasColumnType("INTEGER");
 
                     b.Property<double>("Price")
                         .HasColumnType("REAL");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
 
                     b.ToTable("OrderItems");
 
@@ -91,23 +86,67 @@ namespace BlanchisserieAPI.Migrations
                         new
                         {
                             Id = 1,
-                            ArticleName = "Shirt",
-                            OrderId = 1,
+                            ItemName = "T-shirt",
                             Price = 5.9900000000000002
                         },
                         new
                         {
                             Id = 2,
-                            ArticleName = "Pants",
-                            OrderId = 1,
+                            ItemName = "Shirt",
                             Price = 9.9900000000000002
                         },
                         new
                         {
                             Id = 3,
-                            ArticleName = "Dress",
-                            OrderId = 2,
+                            ItemName = "Pants",
                             Price = 12.99
+                        });
+                });
+
+            modelBuilder.Entity("BlanchisserieAPI.Models.OrderOrderItem", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("OrderItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("OrderedAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("OrderItemId");
+
+                    b.ToTable("OrderOrderItems");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            OrderId = 1,
+                            OrderItemId = 1,
+                            OrderedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 2,
+                            OrderId = 1,
+                            OrderItemId = 2,
+                            OrderedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc)
+                        },
+                        new
+                        {
+                            Id = 3,
+                            OrderId = 2,
+                            OrderItemId = 3,
+                            OrderedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc)
                         });
                 });
 
@@ -193,7 +232,7 @@ namespace BlanchisserieAPI.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "admin@blanchisserie.com",
                             FirstName = "Administrateur",
                             IsActive = true,
@@ -204,7 +243,7 @@ namespace BlanchisserieAPI.Migrations
                         new
                         {
                             Id = 2,
-                            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            CreatedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             Email = "user@blanchisserie.com",
                             FirstName = "Utilisateur",
                             IsActive = true,
@@ -242,14 +281,14 @@ namespace BlanchisserieAPI.Migrations
                         new
                         {
                             Id = 1,
-                            AssignedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            AssignedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             RoleId = 1,
                             UserId = 1
                         },
                         new
                         {
                             Id = 2,
-                            AssignedAt = new DateTime(2025, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc),
+                            AssignedAt = new DateTime(2026, 8, 1, 0, 0, 0, 0, DateTimeKind.Utc),
                             RoleId = 2,
                             UserId = 2
                         });
@@ -266,15 +305,23 @@ namespace BlanchisserieAPI.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BlanchisserieAPI.Models.OrderItem", b =>
+            modelBuilder.Entity("BlanchisserieAPI.Models.OrderOrderItem", b =>
                 {
                     b.HasOne("BlanchisserieAPI.Models.Order", "Order")
-                        .WithMany("OrderItems")
+                        .WithMany("OrderList")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("BlanchisserieAPI.Models.OrderItem", "OrderItem")
+                        .WithMany()
+                        .HasForeignKey("OrderItemId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.Navigation("Order");
+
+                    b.Navigation("OrderItem");
                 });
 
             modelBuilder.Entity("BlanchisserieAPI.Models.UserRole", b =>
@@ -298,7 +345,7 @@ namespace BlanchisserieAPI.Migrations
 
             modelBuilder.Entity("BlanchisserieAPI.Models.Order", b =>
                 {
-                    b.Navigation("OrderItems");
+                    b.Navigation("OrderList");
                 });
 
             modelBuilder.Entity("BlanchisserieAPI.Models.Role", b =>

@@ -15,6 +15,7 @@ namespace BlanchisserieAPI.Data
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
+        public DbSet<OrderOrderItem> OrderOrderItems { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -63,17 +64,32 @@ namespace BlanchisserieAPI.Data
                 .HasForeignKey(ur => ur.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // configuration des Order et OrderItem
-            modelBuilder.Entity<OrderItem>()
-                .HasOne(oi => oi.Order)
-                .WithMany(o => o.OrderItems)
-                .HasForeignKey(oi => oi.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-            
+            // configuration des Order et OrderItem            
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.User)
                 .WithMany()
                 .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderOrderItem>()
+                .HasKey(oo => oo.Id);
+                
+            modelBuilder.Entity<Order>()
+                .HasMany(o => o.OrderList)
+                .WithOne(oo => oo.Order)
+                .HasForeignKey(oo => oo.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<OrderOrderItem>()
+                .HasOne(oo => oo.OrderItem)
+                .WithMany()
+                .HasForeignKey(oo => oo.OrderItemId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<OrderOrderItem>()
+                .HasOne(oo => oo.Order)
+                .WithMany(o => o.OrderList)
+                .HasForeignKey(oo => oo.OrderId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             // Données de démarrage
@@ -90,7 +106,7 @@ namespace BlanchisserieAPI.Data
                 new Role { Id = 2, Name = "Utilisateur" }
             );
 
-            var seedDate = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            var seedDate = new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc);
 
             // Création des utilisateurs
             modelBuilder.Entity<User>().HasData(
@@ -128,7 +144,7 @@ namespace BlanchisserieAPI.Data
                 new Order
                 {
                     Id = 1,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = seedDate,
                     Status = OrderStatus.Waiting,
                     Commentaire = "Please handle with care.",
                     UserId = 1
@@ -137,7 +153,7 @@ namespace BlanchisserieAPI.Data
                 new Order
                 {
                     Id = 2,
-                    CreatedAt = DateTime.UtcNow,
+                    CreatedAt = seedDate,
                     Status = OrderStatus.Waiting,
                     Commentaire = "Urgent delivery required.",
                     UserId = 2
@@ -147,23 +163,43 @@ namespace BlanchisserieAPI.Data
                 new OrderItem
                 {
                     Id = 1,
-                    ArticleName = "Shirt",
-                    Price = 5.99,
-                    OrderId = 1
+                    ItemName = "T-shirt",
+                    Price = 5.99
                 },
                 new OrderItem
                 {
                     Id = 2,
-                    ArticleName = "Pants",
-                    Price = 9.99,
-                    OrderId = 1
+                    ItemName = "Shirt",
+                    Price = 9.99
                 },
                 new OrderItem
                 {
                     Id = 3,
-                    ArticleName = "Dress",
-                    Price = 12.99,
-                    OrderId = 2
+                    ItemName = "Pants",
+                    Price = 12.99
+                }
+            );
+            modelBuilder.Entity<OrderOrderItem>().HasData(
+                new OrderOrderItem
+                {
+                    Id = 1,
+                    OrderId = 1,
+                    OrderItemId = 1,
+                    OrderedAt = seedDate
+                },
+                new OrderOrderItem
+                {
+                    Id = 2,
+                    OrderId = 1,
+                    OrderItemId = 2,
+                    OrderedAt = seedDate
+                },
+                new OrderOrderItem
+                {
+                    Id = 3,
+                    OrderId = 2,
+                    OrderItemId = 3,
+                    OrderedAt = seedDate
                 }
             );
         }

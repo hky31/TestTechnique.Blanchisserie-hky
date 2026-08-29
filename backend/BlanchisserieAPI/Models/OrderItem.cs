@@ -10,13 +10,9 @@ namespace BlanchisserieAPI.Models
         
         [Required]
         [StringLength(100)]
-        public string ArticleName { get; set; } = string.Empty;
+        public string ItemName { get; set; } = string.Empty;
 
         [Required]
         public double Price { get; set; } = 0;
-        
-        [ForeignKey("Order")]
-        public int OrderId { get; set; }
-        public Order Order { get; set; } = null!;
     }
 }

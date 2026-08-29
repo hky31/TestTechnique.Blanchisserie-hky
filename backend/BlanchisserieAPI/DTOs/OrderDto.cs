@@ -30,4 +30,11 @@ namespace BlanchisserieAPI.DTOs
         public OrderStatus Status { get; set; } = OrderStatus.Waiting;
         public string Commentaire { get; set; } = string.Empty;
     }
+
+    public class OrderItemDto
+    {
+        public int Id { get; set; }
+        public string ItemName { get; set; } = string.Empty;
+        public double Price { get; set; }
+    }
 }
