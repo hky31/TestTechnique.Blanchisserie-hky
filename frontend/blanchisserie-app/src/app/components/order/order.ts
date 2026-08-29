@@ -89,6 +89,7 @@ export class OrderComponent implements OnInit {
         this.isSubmitting = false;
         this.selectedItems = [];
         this.orderForm.reset();
+        this.orderService.notifyOrderCreated(); // Notifie les autres composants que la commande a été créée
       },
       error: (err) => {
         this.errorMessage = 'Erreur lors de la création de la commande.';

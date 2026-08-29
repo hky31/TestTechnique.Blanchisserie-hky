@@ -20,6 +20,7 @@ export class OrderHistoryComponent implements OnInit {
   errorMessage = signal('');
 
   OrderStatus = OrderStatus;
+  private currentUserId: number | null = null;
 
   constructor(
     private orderService: OrderService,
@@ -29,7 +30,15 @@ export class OrderHistoryComponent implements OnInit {
   ngOnInit(): void {
     this.authService.currentUser$.subscribe((user: User | null) => {
       if (user) {
+        this.currentUserId = user.id;
         this.loadMyOrders(user.id);
+      }
+    });
+
+    // Recharge la liste à chaque fois qu'une commande est créée ailleurs
+    this.orderService.orderCreated$.subscribe(() => {
+      if (this.currentUserId !== null) {
+        this.loadMyOrders(this.currentUserId);
       }
     });
   }
