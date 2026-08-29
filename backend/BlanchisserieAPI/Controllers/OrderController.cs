@@ -20,7 +20,7 @@ namespace BlanchisserieAPI.Controllers
         }
 
         [HttpGet("get")]
-        [Authorize]
+        [Authorize(Roles = "Admin")] // Seuls les administrateurs peuvent voir toutes les commandes
         public async Task<ActionResult<List<OrderResponseDto>?>> GetAllOrders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
@@ -40,28 +40,32 @@ namespace BlanchisserieAPI.Controllers
             var order = await _orderService.GetOrderByIdAsync(orderId);
 
             if (order == null)
-            {
                 return NotFound(new { message = $"Commande avec l'ID {orderId} non trouvée" });
-            }
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var isAdmin = User.IsInRole("Admin");
+
+            if (!isAdmin && (userIdClaim == null || order.UserId != int.Parse(userIdClaim)))
+                return Forbid();
 
             return Ok(order);
         }
-
+        
         [HttpPost("create")]
         [Authorize]
-        public async Task<ActionResult<OrderResponseDto?>> CreateOrder([FromRoute] int userId, [FromBody] OrderRequestDto orderRequest)
+        public async Task<ActionResult<OrderResponseDto?>> CreateOrder([FromBody] OrderRequestDto orderRequest)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
 
-            var order = await _orderService.CreateOrderAsync(orderRequest, userId);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var order = await _orderService.CreateOrderAsync(orderRequest, userId);  // ⬅️ userId vient du token, pas de orderRequest
 
             if (order == null)
-            {
                 return BadRequest(new { message = "Erreur lors de la création de la commande" });
-            }
 
             return CreatedAtAction(nameof(GetOrderById), new { orderId = order.Id }, order);
         }

@@ -85,7 +85,7 @@ namespace BlanchisserieAPI.Services
             {
                 CreatedAt = DateTime.UtcNow,
                 UserId = userId,
-                Status = orderRequest.Status,
+                Status = OrderStatus.Waiting,
                 Commentaire = orderRequest.Commentaire
             };
 
@@ -93,27 +93,42 @@ namespace BlanchisserieAPI.Services
             _context.Orders.Add(newOrder);
             await _context.SaveChangesAsync();
 
-            // Add OrderItems
-            foreach (var item in orderRequest.OrderItems)
+            // Add OrderOrderItems
+            foreach (var orderItemId in orderRequest.OrderItemIds)
             {
-                var newItem = new OrderItem
+                var orderItem = await _context.OrderItems.FindAsync(orderItemId);
+                if (orderItem != null)
                 {
-                    ItemName = item.ItemName,
-                    Price = item.Price
-                };
-                _context.OrderItems.Add(newItem);
+                    var orderOrderItem = new OrderOrderItem
+                    {
+                        OrderId = newOrder.Id,
+                        OrderItemId = orderItem.Id
+                    };
+                    _context.OrderOrderItems.Add(orderOrderItem);
+                }
             }
 
             // Save changes to the context
             await _context.SaveChangesAsync();
 
+            // Rechargement explicite, cohérent avec les autres méthodes
+            var createdOrder = await _context.Orders
+                .Include(o => o.OrderList)
+                .ThenInclude(oo => oo.OrderItem)
+                .Include(o => o.User)
+                .FirstAsync(o => o.Id == newOrder.Id);
+
             return new OrderResponseDto
             {
-                Id = newOrder.Id,
-                OrderItems = newOrder.OrderList.Select(oo => oo.OrderItem).ToList(),
-                CreatedAt = newOrder.CreatedAt,
-                Status = newOrder.Status,
-                Commentaire = newOrder.Commentaire
+                Id = createdOrder.Id,
+                UserId = createdOrder.UserId,
+                CustomerFirstName = createdOrder.User!.FirstName,
+                CustomerLastName = createdOrder.User!.LastName,
+                CustomerEmail = createdOrder.User!.Email,
+                OrderItems = createdOrder.OrderList.Select(oo => oo.OrderItem).ToList(),
+                CreatedAt = createdOrder.CreatedAt,
+                Status = createdOrder.Status,
+                Commentaire = createdOrder.Commentaire
             };
         }
 

@@ -9,10 +9,17 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/auth.models';
 import { CommonHeaderComponent } from '../common-header/common-header';
 import { OrderComponent } from '../order/order';
+import { OrderHistoryComponent } from '../order-history/order-history';
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, ButtonModule, CommonHeaderComponent, OrderComponent],
+  imports: [
+    CommonModule,
+    ButtonModule,
+    CommonHeaderComponent,
+    OrderComponent,
+    OrderHistoryComponent,
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })

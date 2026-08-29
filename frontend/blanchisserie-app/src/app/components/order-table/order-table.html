@@ -1,0 +1,48 @@
+<div class="order-table-container">
+  <h2>Gestion des commandes</h2>
+
+  <div *ngIf="isLoading()">Chargement...</div>
+  <div class="alert alert-error" *ngIf="errorMessage()">{{ errorMessage() }}</div>
+
+  <table *ngIf="!isLoading() && orders().length > 0">
+    <thead>
+      <tr>
+        <th>Client</th>
+        <th>Date</th>
+        <th>Statut</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let order of orders()">
+        <td>{{ order.customerFirstName }} {{ order.customerLastName }}</td>
+        <td>{{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+        <td>
+          <span
+            class="badge"
+            [ngClass]="{
+              'badge-waiting': order.status === OrderStatus.Waiting,
+              'badge-validated': order.status === OrderStatus.Validated,
+              'badge-refused': order.status === OrderStatus.Refused,
+            }"
+          >
+            {{ statusLabel(order.status) }}
+          </span>
+        </td>
+        <td>
+          <button class="btn-details" (click)="openSummary(order)">Voir détails</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="!isLoading() && orders().length === 0">Aucune commande pour le moment.</p>
+
+  <app-order-confirmation-modal
+    *ngIf="selectedOrder() as order"
+    [order]="order"
+    [showActions]="order.status === OrderStatus.Waiting"
+    (confirm)="onConfirmAction($event)"
+    (close)="closeSummary()"
+  ></app-order-confirmation-modal>
+</div>

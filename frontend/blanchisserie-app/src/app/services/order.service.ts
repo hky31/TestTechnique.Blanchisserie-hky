@@ -18,18 +18,18 @@ export class OrderService {
   }
 
   getAllOrders(): Observable<OrderResponse[]> {
-    return this.http.get<OrderResponse[]>(this.apiUrl);
+    return this.http.get<OrderResponse[]>(`${this.apiUrl}/get`);
   }
 
   createOrder(orderRequest: OrderRequest): Observable<OrderResponse> {
-    return this.http.post<OrderResponse>(this.apiUrl, orderRequest);
+    return this.http.post<OrderResponse>(`${this.apiUrl}/create`, orderRequest);
   }
 
   updateOrder(orderId: number, orderRequest: OrderRequest): Observable<OrderResponse> {
-    return this.http.put<OrderResponse>(`${this.apiUrl}/${orderId}`, orderRequest);
+    return this.http.put<OrderResponse>(`${this.apiUrl}/update/${orderId}`, orderRequest);
   }
 
   getOrdersByUserId(userId: number): Observable<OrderResponse[]> {
-    return this.http.get<OrderResponse[]>(`${this.apiUrl}/user/${userId}`);
+    return this.http.get<OrderResponse[]>(`${this.apiUrl}/get/user/${userId}`);
   }
 }

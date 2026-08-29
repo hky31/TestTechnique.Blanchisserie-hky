@@ -1,25 +1,29 @@
 <div class="order-form-container">
   <h2>Nouvelle commande</h2>
 
-  <form [formGroup]="orderForm" (ngSubmit)="onSubmit()">
-    <div formArrayName="orderItems">
-      <h3>Articles</h3>
-
-      <div class="order-item-row">
-        <div class="form-group">
-          <label>Nom de l'article</label>
-          <input type="text" formControlName="articleName" placeholder="Ex: Chemise" />
-        </div>
-
-        <div class="form-group">
-          <label>Prix (€)</label>
-          <input type="number" formControlName="price" min="0" step="0.01" />
-        </div>
-
-        <button type="button" class="btn-remove" (click)="removeOrderItem()">Retirer</button>
+  <form [formGroup]="orderForm">
+    <div class="form-group article-selector">
+      <label>Choisir un article</label>
+      <div class="selector-row">
+        <select formControlName="selectedItemId">
+          <option [ngValue]="null" disabled>-- Sélectionnez un article --</option>
+          <option *ngFor="let article of orderItems" [ngValue]="article.id">
+            {{ article.itemName }} — {{ article.price | number: '1.2-2' }} €
+          </option>
+        </select>
+        <button type="button" class="btn-add" (click)="addArticle()">+ Ajouter</button>
       </div>
+    </div>
 
-      <button type="button" class="btn-add" (click)="addOrderItem()">+ Ajouter un article</button>
+    <div class="selected-articles" *ngIf="selectedItems.length > 0">
+      <h3>Articles sélectionnés</h3>
+      <ul>
+        <li *ngFor="let article of selectedItems; let i = index">
+          <span>{{ article.itemName }} — {{ article.price | number: '1.2-2' }} €</span>
+          <button type="button" class="btn-remove" (click)="removeArticle(i)">Retirer</button>
+        </li>
+      </ul>
+      <p class="total">Total : {{ totalPrice | number: '1.2-2' }} €</p>
     </div>
 
     <div class="form-group">
@@ -27,6 +31,11 @@
       <textarea formControlName="commentaire" rows="3"></textarea>
     </div>
 
-    <button type="submit">'Envoyer la commande'</button>
+    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
+    <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+
+    <button type="button" (click)="onSubmit()" [disabled]="isSubmitting">
+      {{ isSubmitting ? 'Envoi en cours...' : 'Envoyer la commande' }}
+    </button>
   </form>
 </div>

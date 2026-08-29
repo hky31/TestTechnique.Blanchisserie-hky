@@ -1,11 +1,12 @@
 <div class="admin-container">
   <!-- Header commun -->
-  <app-common-header 
+  <app-common-header
     title="Blanchisserie - Administration"
     brandIcon="pi pi-shield"
     [showAdminBadge]="true"
     [showDashboardButton]="true"
-    [user]="user">
+    [user]="user"
+  >
   </app-common-header>
 
   <!-- Contenu vide -->
@@ -14,5 +15,7 @@
       <h2>Administration</h2>
       <p>Contenu à venir...</p>
     </div>
+
+    <app-order-table></app-order-table>
   </main>
 </div>

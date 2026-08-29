@@ -6,7 +6,7 @@ export enum OrderStatus {
 
 export interface OrderItem {
   id: number;
-  articleName: string;
+  itemName: string;
   price: number;
 }
 
@@ -22,13 +22,18 @@ export interface OrderResponse {
   commentaire: string;
 }
 
+// export interface OrderRequest {
+//   userid: number;
+//   customerFirstName: string;
+//   customerLastName: string;
+//   customerEmail: string;
+//   orderItems: OrderItem[];
+//   createdAt: Date;
+//   status: OrderStatus.Waiting;
+//   commentaire: string;
+// }
 export interface OrderRequest {
-  userid: number;
-  customerFirstName: string;
-  customerLastName: string;
-  customerEmail: string;
-  orderItems: OrderItem[];
-  createdAt: Date;
-  status: OrderStatus.Waiting;
+  orderItemIds: number[];
+  status: OrderStatus;
   commentaire: string;
 }

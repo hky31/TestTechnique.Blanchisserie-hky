@@ -8,16 +8,13 @@ import { ButtonModule } from 'primeng/button';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/auth.models';
 import { CommonHeaderComponent } from '../common-header/common-header';
+import { OrderTableComponent } from '../order-table/order-table';
 
 @Component({
   selector: 'app-admin',
-  imports: [
-    CommonModule,
-    ButtonModule,
-    CommonHeaderComponent
-  ],
+  imports: [CommonModule, ButtonModule, CommonHeaderComponent, OrderTableComponent],
   templateUrl: './admin.html',
-  styleUrl: './admin.scss'
+  styleUrl: './admin.scss',
 })
 export class Admin implements OnInit {
   readonly authService = inject(AuthService);

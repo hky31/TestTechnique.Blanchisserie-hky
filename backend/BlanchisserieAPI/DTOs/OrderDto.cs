@@ -19,16 +19,22 @@ namespace BlanchisserieAPI.DTOs
     }
 
     // DTO for querying orders with details -- effectuer une commande
+    // public class OrderRequestDto
+    // {
+    //     public int UserId { get; set; }
+    //     public string CustomerFirstName { get; set; } = string.Empty;
+    //     public string CustomerLastName { get; set; } = string.Empty;
+    //     public string CustomerEmail { get; set; } = string.Empty;
+    //     public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    //     public DateTime CreatedAt { get; set; }
+    //     public OrderStatus Status { get; set; } = OrderStatus.Waiting;
+    //     public string Commentaire { get; set; } = string.Empty;
+    // }
     public class OrderRequestDto
     {
-        public int UserId { get; set; }
-        public string CustomerFirstName { get; set; } = string.Empty;
-        public string CustomerLastName { get; set; } = string.Empty;
-        public string CustomerEmail { get; set; } = string.Empty;
-        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
-        public DateTime CreatedAt { get; set; }
-        public OrderStatus Status { get; set; } = OrderStatus.Waiting;
+        public List<int> OrderItemIds { get; set; } = new List<int>();
         public string Commentaire { get; set; } = string.Empty;
+        public OrderStatus Status { get; set; } = OrderStatus.Waiting;
     }
 
     public class OrderItemDto
