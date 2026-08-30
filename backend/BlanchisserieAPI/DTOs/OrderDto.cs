@@ -3,7 +3,7 @@ using BlanchisserieAPI.Models;
 
 namespace BlanchisserieAPI.DTOs
 {
-    // DTO for returning order response -- reponse de la validation d'une commande
+    // DTO for returning order response
     public class OrderResponseDto
     {
         public int Id { get; set; }
@@ -26,6 +26,7 @@ namespace BlanchisserieAPI.DTOs
         public OrderStatus Status { get; set; } = OrderStatus.Waiting;
     }
 
+    // DTO for returning order item response
     public class OrderItemDto
     {
         public int Id { get; set; }

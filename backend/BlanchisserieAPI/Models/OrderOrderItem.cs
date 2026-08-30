@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlanchisserieAPI.Models
 {
+    // this class represents the link between an order and its items
     public class OrderOrderItem
     {
         [Key]

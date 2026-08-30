@@ -64,28 +64,22 @@ namespace BlanchisserieAPI.Data
                 .HasForeignKey(ur => ur.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // configuration des Order et OrderItem            
+            // configuration des Order et OrderItem   
+            // one order is linked to one user         
             modelBuilder.Entity<Order>()
                 .HasOne(o => o.User)
                 .WithMany()
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<OrderOrderItem>()
-                .HasKey(oo => oo.Id);
-                
-            modelBuilder.Entity<Order>()
-                .HasMany(o => o.OrderList)
-                .WithOne(oo => oo.Order)
-                .HasForeignKey(oo => oo.OrderId)
-                .OnDelete(DeleteBehavior.Cascade);
-
+            // one OrderItem is linked to one order
             modelBuilder.Entity<OrderOrderItem>()
                 .HasOne(oo => oo.OrderItem)
                 .WithMany()
                 .HasForeignKey(oo => oo.OrderItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            // one order can have many OrderItem, and one OrderItem can belong to many orders
             modelBuilder.Entity<OrderOrderItem>()
                 .HasOne(oo => oo.Order)
                 .WithMany(o => o.OrderList)
@@ -106,6 +100,7 @@ namespace BlanchisserieAPI.Data
                 new Role { Id = 2, Name = "Utilisateur" }
             );
 
+            // creation date set by default for all seed data
             var seedDate = new DateTime(2026, 8, 1, 0, 0, 0, DateTimeKind.Utc);
 
             // Création des utilisateurs
@@ -140,6 +135,7 @@ namespace BlanchisserieAPI.Data
                 new UserRole { Id = 2, UserId = 2, RoleId = 2, AssignedAt = seedDate }  // user -> Utilisateur
             );
 
+            // creation of orders and order items
             modelBuilder.Entity<Order>().HasData(
                 new Order
                 {

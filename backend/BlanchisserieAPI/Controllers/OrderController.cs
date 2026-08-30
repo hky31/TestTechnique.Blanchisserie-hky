@@ -11,12 +11,10 @@ namespace BlanchisserieAPI.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        private readonly IOrderItemService _orderItemService;
 
-        public OrderController(IOrderService orderService, IOrderItemService orderItemService)
+        public OrderController(IOrderService orderService)
         {
             _orderService = orderService;
-            _orderItemService = orderItemService;
         }
 
         [HttpGet("get")]
@@ -26,9 +24,7 @@ namespace BlanchisserieAPI.Controllers
             var orders = await _orderService.GetAllOrdersAsync();
 
             if (orders == null)
-            {
                 return NotFound(new { message = "Aucune commande trouvée" });
-            }
 
             return Ok(orders);
         }
@@ -55,14 +51,17 @@ namespace BlanchisserieAPI.Controllers
         [Authorize]
         public async Task<ActionResult<OrderResponseDto?>> CreateOrder([FromBody] OrderRequestDto orderRequest)
         {
+            // verify if user exists
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userIdClaim == null || !int.TryParse(userIdClaim, out var userId))
                 return Unauthorized();
 
+            // verify if the orderRequest model is valid
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var order = await _orderService.CreateOrderAsync(orderRequest, userId);  // ⬅️ userId vient du token, pas de orderRequest
+            // create the order with the provided orderRequest and userId
+            var order = await _orderService.CreateOrderAsync(orderRequest, userId);
 
             if (order == null)
                 return BadRequest(new { message = "Erreur lors de la création de la commande" });
@@ -75,16 +74,12 @@ namespace BlanchisserieAPI.Controllers
         public async Task<ActionResult<OrderResponseDto?>> UpdateOrder(int orderId, [FromBody] OrderRequestDto orderRequest)
         {
             if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+                return BadRequest(ModelState);            
 
             var order = await _orderService.UpdateOrderAsync(orderId, orderRequest);
 
             if (order == null)
-            {
                 return BadRequest(new { message = "Erreur lors de la mise à jour de la commande" });
-            }
 
             return Ok(order);
         }
@@ -96,9 +91,7 @@ namespace BlanchisserieAPI.Controllers
             var orders = await _orderService.GetOrdersByUserIdAsync(userId);
 
             if (orders == null)
-            {
                 return NotFound(new { message = $"Aucune commande trouvée pour l'utilisateur {userId}" });
-            }
 
             return Ok(orders);
         }
