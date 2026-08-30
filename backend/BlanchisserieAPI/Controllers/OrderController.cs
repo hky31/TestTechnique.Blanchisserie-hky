@@ -20,7 +20,7 @@ namespace BlanchisserieAPI.Controllers
         }
 
         [HttpGet("get")]
-        [Authorize(Roles = "Admin")] // Seuls les administrateurs peuvent voir toutes les commandes
+        [Authorize(Roles = "Admin")] // only admins are able to retrieve all orders
         public async Task<ActionResult<List<OrderResponseDto>?>> GetAllOrders()
         {
             var orders = await _orderService.GetAllOrdersAsync();
@@ -71,7 +71,7 @@ namespace BlanchisserieAPI.Controllers
         }
 
         [HttpPut("update/{orderId}")]
-        [Authorize(Roles = "Admin")] // Seuls les administrateurs peuvent mettre à jour les commandes
+        [Authorize(Roles = "Admin")] // only admins are able to update orders
         public async Task<ActionResult<OrderResponseDto?>> UpdateOrder(int orderId, [FromBody] OrderRequestDto orderRequest)
         {
             if (!ModelState.IsValid)

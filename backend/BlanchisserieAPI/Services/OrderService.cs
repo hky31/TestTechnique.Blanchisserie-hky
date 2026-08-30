@@ -23,6 +23,7 @@ namespace BlanchisserieAPI.Services
             _context = context;
         }
 
+        // Retrieve all orders with details and OrderItems
         public async Task<List<OrderResponseDto>?> GetAllOrdersAsync()
         {
             var allOrders = await _context.Orders
@@ -42,13 +43,14 @@ namespace BlanchisserieAPI.Services
                 })
                 .ToListAsync();
 
-            if(allOrders == null || !allOrders.Any())
+            if (allOrders == null || !allOrders.Any())
                 return null;
-            
+
             return allOrders;
 
         }
 
+        // Retrieve a specific order by ID with details and OrderItems
         public async Task<OrderResponseDto?> GetOrderByIdAsync(int orderid)
         {
             var order = await _context.Orders
@@ -59,7 +61,7 @@ namespace BlanchisserieAPI.Services
 
             if (order == null)
                 return null;
-            
+
             return new OrderResponseDto
             {
                 Id = order.Id,
@@ -74,8 +76,10 @@ namespace BlanchisserieAPI.Services
             };
         }
 
+        // Create a new order with OrderItems and linked to a specific user
         public async Task<OrderResponseDto?> CreateOrderAsync(OrderRequestDto orderRequest, int userId)
         {
+            // verify if user exists
             var user = await _context.Users.FindAsync(userId);
             if (user == null)
                 return null;
@@ -93,7 +97,7 @@ namespace BlanchisserieAPI.Services
             _context.Orders.Add(newOrder);
             await _context.SaveChangesAsync();
 
-            // Add OrderOrderItems
+            // Add OrderOrderItems -- link OrderItems to order
             foreach (var orderItemId in orderRequest.OrderItemIds)
             {
                 var orderItem = await _context.OrderItems.FindAsync(orderItemId);
@@ -111,7 +115,7 @@ namespace BlanchisserieAPI.Services
             // Save changes to the context
             await _context.SaveChangesAsync();
 
-            // Rechargement explicite, cohérent avec les autres méthodes
+            // Reload the new order with its OrderItems to return a complete response
             var createdOrder = await _context.Orders
                 .Include(o => o.OrderList)
                 .ThenInclude(oo => oo.OrderItem)
@@ -132,6 +136,7 @@ namespace BlanchisserieAPI.Services
             };
         }
 
+        // Update the status of an existing order
         public async Task<OrderResponseDto?> UpdateOrderAsync(int orderId, OrderRequestDto orderRequest)
         {
             var order = await _context.Orders
@@ -141,12 +146,12 @@ namespace BlanchisserieAPI.Services
                 .FirstOrDefaultAsync(o => o.Id == orderId);
 
             if (order == null)
-                return null;    
-            
+                return null;
+
             // Update order details
             order.Status = orderRequest.Status;
             order.Commentaire = orderRequest.Commentaire;
-            
+
             // Save changes to the context
             await _context.SaveChangesAsync();
 
@@ -164,6 +169,7 @@ namespace BlanchisserieAPI.Services
             };
         }
 
+        // Retrieve all orders for a specific user with details and OrderItems
         public async Task<List<OrderResponseDto>?> GetOrdersByUserIdAsync(int userId)
         {
             var userOrderList = await _context.Orders

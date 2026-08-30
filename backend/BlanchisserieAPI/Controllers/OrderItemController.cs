@@ -46,5 +46,18 @@ namespace BlanchisserieAPI.Controllers
 
             return Ok(items);
         }
+
+        [HttpDelete("remove/{itemId}")]
+        [Authorize(Roles = "Admin")] // only admins are able to remove items from the catalogue
+        public async Task<ActionResult> RemoveItemFromCatalogue(int itemId){
+            var result = await _orderItemService.RemoveItemFromCatalogueAsync(itemId);
+
+            if (result == 0)
+            {
+                return NotFound(new { message = "Article non trouvé dans le catalogue" });
+            }
+
+            return Ok(new { message = "Article supprimé du catalogue avec succès" });
+        }
     }
 }

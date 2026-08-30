@@ -9,6 +9,7 @@ namespace BlanchisserieAPI.Services
     {
         Task<List<OrderItemDto>?> GetAllItemsByOrderIdAsync(int orderId);
         Task<List<OrderItemDto>?> GetAllItemsAsync();
+        Task<int> RemoveItemFromCatalogueAsync(int itemId);
     }
 
     public class OrderItemService : IOrderItemService
@@ -20,6 +21,7 @@ namespace BlanchisserieAPI.Services
             _context = context;
         }
 
+        // Retrieve all available items for an order
         public async Task<List<OrderItemDto>?> GetAllItemsAsync()
         {
             var allItems = await _context.OrderItems
@@ -37,6 +39,7 @@ namespace BlanchisserieAPI.Services
             return allItems;
         }
 
+        // Retrieve all items of a specific order
         public async Task<List<OrderItemDto>?> GetAllItemsByOrderIdAsync(int orderId)
         {
             var items = await _context.OrderOrderItems
@@ -55,6 +58,17 @@ namespace BlanchisserieAPI.Services
                 return null;
 
             return items;
+        }
+
+        // Remove one item from catalogue
+        public async Task<int> RemoveItemFromCatalogueAsync(int itemId)
+        {
+            var itemToRemove = await _context.OrderItems.FindAsync(itemId);
+            if (itemToRemove == null)
+                return 0;
+            
+            _context.OrderItems.Remove(itemToRemove);
+            return await _context.SaveChangesAsync();
         }
     }
 }
