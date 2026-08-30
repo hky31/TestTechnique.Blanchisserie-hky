@@ -2,40 +2,52 @@
   <h2>Nouvelle commande</h2>
 
   <form [formGroup]="orderForm">
-    <div class="form-group article-selector">
+    <div>
       <label>Choisir un article</label>
-      <div class="selector-row">
+      <div>
         <select formControlName="selectedItemId">
           <option [ngValue]="null" disabled>-- Sélectionnez un article --</option>
-          <option *ngFor="let article of orderItems" [ngValue]="article.id">
-            {{ article.itemName }} — {{ article.price | number: '1.2-2' }} €
-          </option>
+          @for (item of orderItems(); track item.id) {
+            <option [ngValue]="item.id">
+              {{ item.itemName }} — {{ item.price | number: '1.2-2' }} €
+            </option>
+          }
         </select>
-        <button type="button" class="btn-add" (click)="addArticle()">+ Ajouter</button>
+        <button type="button" class="add-item-button" (click)="addArticle()">+ Ajouter</button>
       </div>
     </div>
 
-    <div class="selected-articles" *ngIf="selectedItems.length > 0">
-      <h3>Articles sélectionnés</h3>
-      <ul>
-        <li *ngFor="let article of selectedItems; let i = index">
-          <span>{{ article.itemName }} — {{ article.price | number: '1.2-2' }} €</span>
-          <button type="button" class="btn-remove" (click)="removeArticle(i)">Retirer</button>
-        </li>
-      </ul>
-      <p class="total">Total : {{ totalPrice | number: '1.2-2' }} €</p>
+    @if (selectedItems().length > 0) {
+      <div>
+        <h3>Articles sélectionnés</h3>
+        <ul>
+          @for (item of selectedItems(); track item.id; let i = $index) {
+            <li>
+              <span>{{ item.itemName }} — {{ item.price | number: '1.2-2' }} €</span>
+              <button class="remove-item-button" type="button" (click)="removeArticle(i)">
+                Retirer
+              </button>
+            </li>
+          }
+        </ul>
+        <p>Total : {{ totalPrice() | number: '1.2-2' }} €</p>
+      </div>
+    }
+
+    <div>
+      <label class="order-label-comment">Commentaire (facultatif)</label>
+      <textarea formControlName="commentaire" rows="5" cols="100"></textarea>
     </div>
 
-    <div class="form-group">
-      <label>Commentaire (facultatif)</label>
-      <textarea formControlName="commentaire" rows="3"></textarea>
-    </div>
+    @if (errorMessage()) {
+      <div>{{ errorMessage() }}</div>
+    }
+    @if (successMessage()) {
+      <div>{{ successMessage() }}</div>
+    }
 
-    <div class="alert alert-error" *ngIf="errorMessage">{{ errorMessage }}</div>
-    <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
-
-    <button type="button" (click)="onSubmit()" [disabled]="isSubmitting">
-      {{ isSubmitting ? 'Envoi en cours...' : 'Envoyer la commande' }}
+    <button type="button" (click)="onSubmit()" [disabled]="isSubmitting()">
+      {{ isSubmitting() ? 'Envoi en cours...' : 'Envoyer la commande' }}
     </button>
   </form>
 </div>

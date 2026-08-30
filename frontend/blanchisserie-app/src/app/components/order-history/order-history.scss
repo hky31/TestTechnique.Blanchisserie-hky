@@ -1,0 +1,35 @@
+.order-history-container {
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.order-confirmation-modal {
+  background-color: whitesmoke;
+  padding: 20px;
+  border: 1px solid black;
+}
+
+.item-detail-button {
+  margin-left: 10px;
+}
+
+table {
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+th,
+td {
+  padding: 5px 15px;
+  text-align: left;
+}
+
+thead th {
+  border-bottom: 2px solid #ccc;
+}
+
+tbody tr:not(:last-child) td {
+  border-bottom: 1px solid #eee;
+}

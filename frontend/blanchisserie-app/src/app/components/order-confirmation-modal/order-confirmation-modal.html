@@ -1,41 +1,53 @@
-<div class="modal-overlay" (click)="onClose()">
-  <div class="modal-content" (click)="$event.stopPropagation()">
-    <button class="modal-close" (click)="onClose()">×</button>
+<div (click)="onClose()">
+  <div (click)="$event.stopPropagation()">
+    <button (click)="onClose()">×</button>
 
     <h2>Récapitulatif de la commande #{{ order.id }}</h2>
 
-    <div class="modal-section">
+    <div>
       <p><strong>Client :</strong> {{ order.customerFirstName }} {{ order.customerLastName }}</p>
       <p><strong>Email :</strong> {{ order.customerEmail }}</p>
       <p><strong>Date :</strong> {{ order.createdAt | date: 'dd/MM/yyyy HH:mm' }}</p>
       <p>
         <strong>Statut :</strong>
-        <span [ngSwitch]="order.status">
-          <span *ngSwitchCase="OrderStatus.Waiting" class="badge badge-waiting">En attente</span>
-          <span *ngSwitchCase="OrderStatus.Validated" class="badge badge-validated">Validée</span>
-          <span *ngSwitchCase="OrderStatus.Refused" class="badge badge-refused">Refusée</span>
+        <span>
+          @switch (order.status) {
+            @case (OrderStatus.Waiting) {
+              <span>En attente</span>
+            }
+            @case (OrderStatus.Validated) {
+              <span>Validée</span>
+            }
+            @case (OrderStatus.Refused) {
+              <span>Refusée</span>
+            }
+          }
         </span>
       </p>
     </div>
 
-    <div class="modal-section">
+    <div>
       <h3>Articles</h3>
       <ul>
         <li *ngFor="let item of order.orderItems">
           {{ item.itemName }} — {{ item.price | number: '1.2-2' }} €
         </li>
       </ul>
-      <p class="total">Total : {{ totalPrice | number: '1.2-2' }} €</p>
+      <p>Total : {{ totalPrice | number: '1.2-2' }} €</p>
     </div>
 
-    <div class="modal-section" *ngIf="order.commentaire">
-      <h3>Commentaire</h3>
-      <p>{{ order.commentaire }}</p>
-    </div>
+    @if (order.commentaire) {
+      <div>
+        <h3>Commentaire</h3>
+        <p>{{ order.commentaire }}</p>
+      </div>
+    }
 
-    <div class="modal-actions" *ngIf="showActions">
-      <button class="btn-refuse" (click)="onRefuse()">Refuser</button>
-      <button class="btn-validate" (click)="onValidate()">Valider</button>
-    </div>
+    @if (showActions) {
+      <div>
+        <button (click)="onRefuse()">Refuser</button>
+        <button (click)="onValidate()">Valider</button>
+      </div>
+    }
   </div>
 </div>

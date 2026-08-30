@@ -1,3 +1,4 @@
+// enum for order status
 export enum OrderStatus {
   Waiting = 0,
   Validated = 1,
@@ -21,17 +22,6 @@ export interface OrderResponse {
   status: OrderStatus;
   commentaire: string;
 }
-
-// export interface OrderRequest {
-//   userid: number;
-//   customerFirstName: string;
-//   customerLastName: string;
-//   customerEmail: string;
-//   orderItems: OrderItem[];
-//   createdAt: Date;
-//   status: OrderStatus.Waiting;
-//   commentaire: string;
-// }
 export interface OrderRequest {
   orderItemIds: number[];
   status: OrderStatus;

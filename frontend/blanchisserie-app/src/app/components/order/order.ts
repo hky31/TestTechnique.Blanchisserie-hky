@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { OrderItem, OrderRequest, OrderStatus } from '../../models/order.models';
@@ -15,14 +15,16 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './order.scss',
 })
 export class OrderComponent implements OnInit {
-  orderItems: OrderItem[] = [];
-  selectedItems: OrderItem[] = [];
+  orderItems = signal<OrderItem[]>([]);
+  selectedItems = signal<OrderItem[]>([]);
   orderForm: FormGroup;
-  isSubmitting = false;
-  errorMessage = '';
-  successMessage = '';
+  isSubmitting = signal(false);
+  errorMessage = signal('');
+  successMessage = signal('');
   readonly authService = inject(AuthService);
-  user: User | null = null;
+  user = signal<User | null>(null);
+
+  totalPrice = computed(() => this.selectedItems().reduce((sum, a) => sum + a.price, 0));
 
   constructor(
     private fb: FormBuilder,
@@ -37,12 +39,12 @@ export class OrderComponent implements OnInit {
 
   ngOnInit(): void {
     this.orderItemService.getAllItems().subscribe({
-      next: (orderItems) => (this.orderItems = orderItems),
+      next: (orderItems) => this.orderItems.set(orderItems),
       error: (err) => console.error('Erreur chargement catalogue', err),
     });
 
     this.authService.currentUser$.subscribe((user: User | null) => {
-      this.user = user;
+      this.user.set(user);
     });
   }
 
@@ -50,50 +52,43 @@ export class OrderComponent implements OnInit {
     const selectedId = this.orderForm.get('selectedItemId')?.value;
     if (!selectedId) return;
 
-    const article = this.orderItems.find((a) => a.id === +selectedId);
+    const article = this.orderItems().find((a) => a.id === +selectedId);
     if (article) {
-      this.selectedItems.push(article);
+      this.selectedItems.update((items) => [...items, article]);
     }
-
-    // Réinitialise uniquement le select, pas tout le formulaire
-    this.orderForm.get('selectedItemId')?.reset();
   }
 
   removeArticle(index: number): void {
-    this.selectedItems.splice(index, 1);
-  }
-
-  get totalPrice(): number {
-    return this.selectedItems.reduce((sum, a) => sum + a.price, 0);
+    this.selectedItems.update((items) => items.filter((_, i) => i !== index));
   }
 
   onSubmit(): void {
-    if (this.selectedItems.length === 0) {
-      this.errorMessage = 'Veuillez ajouter au moins un article.';
+    if (this.selectedItems().length === 0) {
+      this.errorMessage.set('Veuillez ajouter au moins un article.');
       return;
     }
 
-    this.isSubmitting = true;
-    this.errorMessage = '';
-    this.successMessage = '';
+    this.isSubmitting.set(true);
+    this.errorMessage.set('');
+    this.successMessage.set('');
 
     const orderRequest: OrderRequest = {
-      orderItemIds: this.selectedItems.map((item) => item.id),
+      orderItemIds: this.selectedItems().map((item) => item.id),
       commentaire: this.orderForm.get('commentaire')?.value || '',
       status: OrderStatus.Waiting,
     };
 
     this.orderService.createOrder(orderRequest).subscribe({
       next: () => {
-        this.successMessage = 'Commande envoyée avec succès !';
-        this.isSubmitting = false;
-        this.selectedItems = [];
+        this.successMessage.set('Commande envoyée avec succès !');
+        this.isSubmitting.set(false);
+        this.selectedItems.set([]);
         this.orderForm.reset();
-        this.orderService.notifyOrderCreated(); // Notifie les autres composants que la commande a été créée
+        this.orderService.notifyOrderCreated();
       },
       error: (err) => {
-        this.errorMessage = 'Erreur lors de la création de la commande.';
-        this.isSubmitting = false;
+        this.errorMessage.set('Erreur lors de la création de la commande.');
+        this.isSubmitting.set(false);
         console.error(err);
       },
     });
