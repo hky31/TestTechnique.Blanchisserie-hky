@@ -33,3 +33,11 @@ thead th {
 tbody tr:not(:last-child) td {
   border-bottom: 1px solid #eee;
 }
+
+button {
+  padding: 3px 10px;
+  margin-right: 5px;
+  font-size: 15px;
+  border-radius: 4px;
+  cursor: pointer;
+}
