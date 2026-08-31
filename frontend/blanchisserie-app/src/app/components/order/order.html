@@ -3,7 +3,7 @@
 
   <form [formGroup]="orderForm">
     <div>
-      <label>Choisir un article</label>
+      <label>Choisir un article parmi le catalogue</label>
       <div>
         <select formControlName="selectedItemId">
           <option [ngValue]="null" disabled>-- Sélectionnez un article --</option>
@@ -13,7 +13,7 @@
             </option>
           }
         </select>
-        <button type="button" class="add-item-button" (click)="addArticle()">+ Ajouter</button>
+        <button type="button" class="add-item-button" (click)="addArticle()">+ Ajouter au panier</button>
       </div>
     </div>
 

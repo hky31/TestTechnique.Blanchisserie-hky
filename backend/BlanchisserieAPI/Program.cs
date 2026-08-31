@@ -44,7 +44,9 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngularApp", policy =>
     {
-        policy.WithOrigins("http://localhost:4200")
+        policy.WithOrigins("http://localhost:4200",
+                        "https://zany-waffle-9xpw7pp5rrqf7pqw-4200.app.github.dev"
+        )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

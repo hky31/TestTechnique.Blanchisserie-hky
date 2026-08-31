@@ -1,0 +1,44 @@
+<header class="common-header">
+    <div class="header-content">
+    <div class="brand">
+        <i [class]="brandIcon" class="mr-2"></i>
+        <span class="brand-text">{{ title }}</span>
+        <span *ngIf="showAdminBadge" class="admin-badge">
+        <i class="pi pi-shield"></i>
+        Admin
+        </span>
+    </div>
+    
+    <div class="header-actions">
+        <span *ngIf="user" class="user-name">{{ user.firstName }} {{ user.lastName }}</span>
+        
+        <p-button 
+        *ngIf="showDashboardButton"
+        label="Dashboard" 
+        icon="pi pi-home"
+        [text]="true"
+        severity="secondary"
+        (onClick)="goToDashboard()">
+        </p-button>
+
+        <p-button 
+        *ngIf="userRole() === 'Admin' && !showDashboardButton"
+        label="Admin Order" 
+        icon="pi pi-home"
+        [text]="true"
+        severity="secondary"
+        (onClick)="goToAdminOrder()">
+        </p-button>
+        
+        <p-button 
+        icon="pi pi-sign-out" 
+        label="Déconnexion"
+        [text]="true"
+        severity="secondary"
+        (onClick)="logout()"
+        pTooltip="Se déconnecter"
+        tooltipPosition="bottom">
+        </p-button>
+    </div>
+    </div>
+</header>

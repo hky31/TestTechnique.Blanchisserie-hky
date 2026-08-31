@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:5172/api'
+  apiUrl: 'https://zany-waffle-9xpw7pp5rrqf7pqw-5172.app.github.dev/api'
 };

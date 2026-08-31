@@ -1,0 +1,34 @@
+AtoutMajeurConcept - Test technique 
+
+Recuperation du projet et ouverture sous VSCode Mac -> OK
+Compilation et execution du frontend -> OK
+Compilation et execution du backend -> KO
+
+Correction appointees pour le backend :
+- modification de la méthode onModelCreating ; DateTime.Now/UtcNow par une variable de date valeur fixe
+- LocalDb ne peut pas être utilise dans un environnement Mac, donc modification du provider EFCore : SQLServer —> SqlLite
+    - installation du provider EFCore SqlLite via paquet Nuget : dotnet add package Microsoft.EntityFrameworkCore.Sqlite 
+    - modification du fichier Program.cs : 
+            * // builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            * //     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            * builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            *     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    - modification du fichier appsettings.Developpement.json : 
+  // "ConnectionStrings": {   //   "DefaultConnection": "Server=(localdb)\\mssqllocaldb;Database=BlanchisserieDB_Dev;Trusted_Connection=true;MultipleActiveResultSets=true"   // }, "ConnectionStrings": { "DefaultConnection": "Data Source=blanchisserie.db" },
+- Ajout de DTOs “Order” et “Orderitem”pour les commandes et les articles avec lien de clé étrangere entre Order et OrderItem, ainsi qu’un lien entre Order et User pour savoir a quel User chaque Order appartient
+- Mise a jour du DbContext 
+    - modelBuilder.Entity<Order>().HasIndex(o => o.CustomerFirstName).IsUnique(); —> inutile pour Order car un Customer peut faire plusieurs Order et par definition de base une Order a une unique clé ce qui en fait deja son unicité 
+    - declaration du lien foreignKey Order->User
+    - ajout de données 
+- Ajout d’un OrderService pour gérer les operations sur les Order
+- Ajout d’un controller pour exposer les services vers le front
+- une fois l’ajout des models, services, controller —> Migration des données avec : dotnet ef migrations add xxx et dotnet ef database update
+- ajout d’un nouveau composant frontend, puis d’un fichier model qui représente les DTO/Model du backend
+- un composant pour gérer les commandes
+- un composant pour afficher le tableau récapitulatif de toutes les commandes, accessible pour user/admin
+- un composant pour Valider/Refuser une commande en cours
+- ajout d’un service qui permet d’appeler les endpoints API du backend
+- chaque composant est défini avec du Signal afin de pouvoir communiquer entre eux et se mettre suite a une action si nécessaire 
+- utilisation des dernières versions de syntaxe pour les conditions et boucle d’affichage 
+
