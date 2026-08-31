@@ -49,10 +49,10 @@ export class OrderComponent implements OnInit {
   }
 
   addArticle(): void {
-    const selectedId = this.orderForm.get('selectedItemId')?.value;
+    const selectedId: number = this.orderForm.get('selectedItemId')?.value;
     if (!selectedId) return;
 
-    const article = this.orderItems().find((a) => a.id === +selectedId);
+    const article = this.orderItems().find((a) => a.id === selectedId);
     if (article) {
       this.selectedItems.update((items) => [...items, article]);
     }

@@ -49,16 +49,16 @@ export class OrderTableComponent implements OnInit {
   }
 
   onConfirmAction(newStatus: OrderStatus): void {
-    const current = this.selectedOrder();
-    if (!current) return;
+    const currentOrder = this.selectedOrder();
+    if (!currentOrder) return;
 
-    const payload = {
+    const orderToUpdate = {
       orderItemIds: [],
-      commentaire: current.commentaire,
+      commentaire: currentOrder.commentaire,
       status: newStatus,
     };
 
-    this.orderService.updateOrder(current.id, payload).subscribe({
+    this.orderService.updateOrder(currentOrder.id, orderToUpdate).subscribe({
       next: (updatedOrder) => {
         this.orders.update((list) =>
           list.map((o) => (o.id === updatedOrder.id ? updatedOrder : o)),
